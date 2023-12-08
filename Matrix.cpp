@@ -32,8 +32,13 @@ class Matrix
         bool isUnitMatrix(); // Kiem tra ma tran don vi 
         bool isRowMatrix(); // Kiem tra ma trang hang
         bool isColumnMatrix(); // Kiem tra ma tran cot
+        bool isAboveTriangleMatrix(); // Kiem tra ma tran tam giac tren
+        bool isBelowTriangleMatrix(); // Kiem tra ma tran tam giac duoi
 
+        Matrix eraseRowMatrix(int row); // Xoa 1 hang bat ki
+        Matrix eraseColumnMatrix(int col); // Xoa 1 cot bat ki
         Matrix displacementMatrix(); // Ma tran chuyen vi
+        Matrix childrenMaxSymmetryMatrix(); // Ma tran con
 
         bool isEqual(Matrix matrix); // Kiem tra 2 ma tran bang nhau
 
@@ -41,6 +46,8 @@ class Matrix
         Matrix minusTwoMatrixs(Matrix matrix); // Tru 2 ma tran
         Matrix scalarMultipliteMatrix(int k); // Nhan vo huong ma tran voi k 
         Matrix MultipliteTwoMatrixs(Matrix matrix); // Nhan 2 ma tran
+
+        T determinantMatrix(); // Định thức
 };
 
 template <class T> 
@@ -182,6 +189,62 @@ bool Matrix <T> :: isColumnMatrix()
 }
 
 template <class T>
+bool Matrix <T> ::isAboveTriangleMatrix()
+{
+    if(!isSquareMatrix())
+        return false;
+    else 
+    {
+        for(int i = 0; i < rows; i++)
+        {
+            for(int j = 0; j < cols; j++)
+            {
+                if(j <= i)
+                {
+                    if(getValueRowAndCol(i,j) == 0)
+                        return false;
+                }
+                else 
+                {
+                    if(getValueRowAndCol(i,j) != 0)
+                        return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
+template <class T>
+bool Matrix <T> ::isBelowTriangleMatrix()
+{
+    if(!isSquareMatrix())
+        return false;
+    else 
+    {
+        for(int i = 0; i < rows; i++)
+        {
+            for(int j = 0; j < cols; j++)
+            {
+                if(j >= i)
+                {
+                    if(getValueRowAndCol(i,j) == 0)
+                        return false;
+                }
+                else 
+                {
+                    if(getValueRowAndCol(i,j) != 0)
+                        return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
+
+
+template <class T>
 T * Matrix <T> :: getRow(int row)
 {
     T *temp = new T[cols];
@@ -209,6 +272,36 @@ T * Matrix <T> :: getColumn(int col)
     return temp;
 }
 
+
+template <class T> 
+Matrix <T> Matrix <T> :: eraseRowMatrix(int row)
+{
+    if(rows == 1 && cols == 1)
+        return Matrix();
+    else
+    {
+        if(row < 0 || row >= rows)
+            return Matrix();
+        else 
+        {
+            int newRows = rows - 1; 
+            int newCols = cols;
+            Matrix matrix(newRows, newCols);
+
+            for(int i = 0, newRow = 0; i < rows; i++)
+            {
+                if(i != newRow)
+                {
+                    for(int j = 0; j < cols; j++)
+                    matrix.setValueRowAndCol(newRow,j,data[j]);
+                }
+                newRow++;
+            }
+            return matrix;
+        }
+    }
+}
+
 template <class T>
 Matrix <T> Matrix <T> :: displacementMatrix()
 {
@@ -225,6 +318,21 @@ Matrix <T> Matrix <T> :: displacementMatrix()
     }
     return matrix;
 }
+
+// template <class T>
+// Matrix <T> Matrix <T> :: childrenMaxSymmetryMatrix()
+// {
+//     if(!isSquareMatrix())
+//         return Matrix();
+//     else 
+//     {
+//         int newRows = rows - 1;
+//         int newCols = cols - 1;
+//         Matrix matrix(newRows, newCols);
+
+//         for(int i = 0; i < )
+//     }
+// }
 
 template <class T>
 bool Matrix <T> ::isEqual(Matrix <T> matrix)
@@ -310,11 +418,30 @@ Matrix <T> Matrix <T> :: MultipliteTwoMatrixs(Matrix <T> matrix)
     }
 }
 
+template <class T>
+T Matrix <T> :: determinantMatrix()
+{
+    if(!isSquareMatrix())
+        return -99;
+    else 
+    {
+        if(rows == 1)
+            return getValueRowAndCol(rows,cols);
+        else if(rows == 2)
+            return (getValueRowAndCol(0,0) * getValueRowAndCol(1,1)) - (getValueRowAndCol(1,0) * getValueRowAndCol(0,1));
+        else
+        {
+
+        }
+    }
+}
+
 int main()
 {
-    Matrix <int> matrix1(3,3);
+    Matrix <int> matrix1(2,2);
     matrix1.input();
-    Matrix <int> matrix2(3,3);
-    matrix2.input();
-    matrix1.MultipliteTwoMatrixs(matrix2).print();
+    // Matrix <int> matrix2(3,3);
+    // matrix2.input();
+    matrix1.print();
+    matrix1.eraseRowMatrix(1).print();
 }
